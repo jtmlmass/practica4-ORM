@@ -1,0 +1,19 @@
+Conseguir Template:
+Buscar un template en bootstrap apropiado para la tarea a ser realizada. 
+Buscar consenso con el template elegido. 
+Traer el template al proyecto; Conectar el template con Spark, hacer que el CSS de bootstrap y del template funcionen.
+Designar las rutas a ser utilizadas según el proyecto.
+Asignar cada segmento del template a diversas rutas.
+Probar que por lo menos las putas rutas funcionen...
+Pasar el modelo de clases al proyecto.
+Descargar la librería SQL2O.
+Investigar sobre esta librería. 
+Estudiar bien las facalidades del ORM, y los requisitos para diseñar bien la base de datos, añadirle y quitarle vainas...
+Conectar la mierda esta a la base de datos embedida.**
+
+Comenzar a joder con sesiones y rutas.
+
+Implementación de Laravel Mix: Lect. 31.
+
+
+

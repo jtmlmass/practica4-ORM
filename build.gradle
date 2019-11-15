@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'chemasspark'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'com.sparkjava:spark-core:2.9.1'
+    compile 'com.h2database:h2:1.4.191'
+    // https://mvnrepository.com/artifact/com.sparkjava/spark-core
+    compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.1'
+    // https://mvnrepository.com/artifact/org.sql2o/sql2o
+    compile group: 'org.sql2o', name: 'sql2o', version: '1.5.4'
+    compile group: 'org.webjars', name: 'bootstrap', version: '4.3.1'
+    // https://mvnrepository.com/artifact/org.freemarker/freemarker
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.20'
+    compile 'com.sparkjava:spark-template-freemarker:2.5.5'
+    compile 'org.freemarker:freemarker:2.3.26-incubating'
+    compile "org.slf4j:slf4j-simple:1.7.21"
+    // https://mvnrepository.com/artifact/org.jasypt/jasypt
+    compile group: 'org.jasypt', name: 'jasypt', version: '1.9.0'
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
+}

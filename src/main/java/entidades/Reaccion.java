@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "reacciones")
+
 public class Reaccion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,8 @@ public class Reaccion {
     @Enumerated(EnumType.STRING)
     private TipoReaccion tipoReaccion;
 
-    public Reaccion(){}
+    public Reaccion() {
+    }
 
     public Reaccion(Usuario usuarioLiked, Articulo articuloLiked, Comentario comentario) {
         this.usuarioLiked = usuarioLiked;

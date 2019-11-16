@@ -1,5 +1,7 @@
 package entidades;
 
+import encapsulacion.Articulo;
+
 import javax.persistence.*;
 
 @Entity

@@ -1,18 +1,16 @@
 package entidades;
 
-import encapsulacion.Articulo;
-
 import javax.persistence.*;
 
 @Entity
-@Table(name = "dislike")
+@Table(name = "dislikes")
 public class Dislike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private Articulo articulo;
+    private entidades.Articulo articulo;
 
     @ManyToOne
     private Usuario usuario;

@@ -521,7 +521,7 @@ public class Main {
         UsuarioService.getInstance().findAll();
         UsuarioService.getInstance().editar(chemaMod);
         UsuarioService.getInstance().findAll();
-        UsuarioService.getInstance().eliminar(chemaMod);
+        UsuarioService.getInstance().eliminar("chema ");
         UsuarioService.getInstance().findAll();
 
 

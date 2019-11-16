@@ -18,11 +18,11 @@ public class Comentario implements Serializable {
     @ManyToOne
     private Usuario usuario;
 
-    @Column(columnDefinition = "default '0'")
-    private Long like;
+    @Column(columnDefinition = "long default '0'")
+    private Long cantLikes;
 
-    @Column(columnDefinition = "default '0'")
-    private Long dislike;
+    @Column(columnDefinition = "long default '0'")
+    private Long cantDislikes;
 
     public Long getId() {
         return id;
@@ -55,20 +55,20 @@ public class Comentario implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    public Long getLike() {
-        return like;
+    public Long getCantLikes() {
+        return cantLikes;
     }
 
-    public void setLike(Long like) {
-        this.like = like;
+    public void setCantLikes(Long cantLikes) {
+        this.cantLikes = cantLikes;
     }
 
-    public Long getDislike() {
-        return dislike;
+    public Long getCantDislikes() {
+        return cantDislikes;
     }
 
-    public void setDislike(Long dislike) {
-        this.dislike = dislike;
+    public void setCantDislikes(Long cantDislikes) {
+        this.cantDislikes = cantDislikes;
     }
 }
 

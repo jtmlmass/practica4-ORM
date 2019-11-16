@@ -1,17 +1,13 @@
 package entidades;
 
-import javafx.beans.DefaultProperty;
-import org.h2.value.Value;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 @Entity
 public class Comentario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigo;
+    private long id;
 
     @Column(columnDefinition="LONGTEXT")
     private String comentario;
@@ -23,17 +19,17 @@ public class Comentario implements Serializable {
     private Usuario usuario;
 
     @Column(columnDefinition = "default '0'")
-    private Long meGusta;
+    private Long like;
 
     @Column(columnDefinition = "default '0'")
-    private Long noMegusta;
+    private Long dislike;
 
-    public Long getCodigo() {
-        return codigo;
+    public Long getId() {
+        return id;
     }
 
-    public void setCodigo(Long codigo) {
-        this.codigo = codigo;
+    public void setId(Long codigo) {
+        this.id = codigo;
     }
 
     public String getComentario() {
@@ -59,20 +55,20 @@ public class Comentario implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    public Long getMeGusta() {
-        return meGusta;
+    public Long getLike() {
+        return like;
     }
 
-    public void setMeGusta(Long meGusta) {
-        this.meGusta = meGusta;
+    public void setLike(Long like) {
+        this.like = like;
     }
 
-    public Long getNoMegusta() {
-        return noMegusta;
+    public Long getDislike() {
+        return dislike;
     }
 
-    public void setNoMegusta(Long noMegusta) {
-        this.noMegusta = noMegusta;
+    public void setDislike(Long dislike) {
+        this.dislike = dislike;
     }
 }
 

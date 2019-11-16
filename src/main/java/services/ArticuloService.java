@@ -8,46 +8,47 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ArticuloService extends  GestionDB<Articulo>{
+public class ArticuloService extends BaseService<Articulo> {
     private static ArticuloService articuloServiceInstance;
 
     public ArticuloService() {
         super(Articulo.class);
     }
 
-    public static ArticuloService getInstancia() {
+    public static ArticuloService getInstance() {
         if (articuloServiceInstance == null) {
             articuloServiceInstance = new ArticuloService();
         }
         return articuloServiceInstance;
     }
 
-    public Set<Articulo> findAllDescByFecha() {
-        EntityManager em = getEntityManager();
-        Query query = em.createNamedQuery("Articulo.findAllDescByFecha");
-        Set<Articulo> listaArticulosAux = limitCuerpoArticulo(query.getResultList());
+    public Set<Articulo> selectDescDate() {
+        EntityManager entityManager = getEntityManager();
+        Query query = entityManager.createNamedQuery("Articulo.selectDescDate");
+        Set<Articulo> listaArticulosAux = setUpCuerpoHome(query.getResultList());
 
         return listaArticulosAux;
     }
 
-    public Set<Articulo> limitCuerpoArticulo(List<Articulo> articulos) {
+    public Set<Articulo> setUpCuerpoHome(List<Articulo> articulos) {
         Set<Articulo> listaArticulosAux = new HashSet<>();
         for (Articulo art : articulos) {
             Articulo articuloAux = art;
+            /* Añadir parseo de JSoup*/
             articuloAux.setCuerpo(art.getCuerpo().substring(0, 70));
             listaArticulosAux.add(articuloAux);
         }
         return listaArticulosAux;
     }
 
-    public Set<Articulo> findAllbyPagination(int pagina, int paginaNumero) {
-        EntityManager em = getEntityManager();
-        String hql = "FROM Articulo a order by a.fecha_publicacion DESC";
-        Query query = em.createQuery(hql);
-        query.setFirstResult((paginaNumero-1) * pagina);
-        query.setMaxResults(pagina);
+    public Set<Articulo> selectPaginated(int cantElementos, int numPagina) {
+        EntityManager entityManager = getEntityManager();
+        String sql = "FROM Articulo a order by a.fecha DESC";
+        Query query = entityManager.createQuery(sql);
+        query.setFirstResult((numPagina-1) * cantElementos);
+        query.setMaxResults(cantElementos);
         List<Articulo> listaArticulo = query.getResultList();
-        Set<Articulo> listaArticulosAux = limitCuerpoArticulo(query.getResultList());
+        Set<Articulo> listaArticulosAux = setUpCuerpoHome(query.getResultList());
 
         return listaArticulosAux;
     }

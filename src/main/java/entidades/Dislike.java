@@ -3,11 +3,11 @@ package entidades;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "NOMEGUSTA")
+@Table(name = "dislike")
 public class Dislike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigo;
+    private Long id;
 
     @ManyToOne
     private Articulo articulo;
@@ -31,11 +31,11 @@ public class Dislike {
         this.usuario = usuario;
     }
 
-    public Long getCodigo() {
-        return codigo;
+    public Long getId() {
+        return id;
     }
 
-    public void setCodigo(Long codigo) {
-        this.codigo = codigo;
+    public void setId(Long codigo) {
+        this.id = id;
     }
 }

@@ -6,12 +6,12 @@ import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import java.lang.reflect.Field;
 import java.util.List;
-public class GestionDB <T>{
+public class BaseService<T>{
     /*Interface used to interact with the entity manager factory for the persistence unit.*/
     private static EntityManagerFactory emFactory;
     private Class<T> claseEntidad;
 
-    public GestionDB(Class<T> claseEntidad){
+    public BaseService(Class<T> claseEntidad){
         if (emFactory == null){
             /*Bootstrap class that is used to obtain an EntityManagerFactory in Java SE environments. It may also be
             used to cause schema generation to occur.*/

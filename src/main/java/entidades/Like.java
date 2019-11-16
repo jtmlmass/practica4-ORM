@@ -4,11 +4,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "MEGUSTA")
+@Table(name = "like")
 public class Like implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigo;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Usuario usuarioLike;
@@ -19,12 +19,12 @@ public class Like implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Comentario comentario;
 
-    public Long getCodigo() {
-        return codigo;
+    public Long getId() {
+        return id;
     }
 
-    public void setCodigo(Long codigo) {
-        this.codigo = codigo;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Usuario getUsuarioLike() {

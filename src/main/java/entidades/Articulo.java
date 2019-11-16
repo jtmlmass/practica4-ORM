@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@NamedQueries({@NamedQuery(name = "Articulo.findAllDescByFecha", query = "select a from Articulo as a order by a.fecha_publicacion desc")})
+@NamedQueries({@NamedQuery(name = "Articulo.selectDescDate", query = "select a from Articulo as a order by a.fecha desc")})
 public class Articulo implements Serializable {
     /*    private long id;
     private String titulo;
@@ -21,13 +21,13 @@ public class Articulo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigo;
+    private long id;
     private String titulo;
 
     @Column(columnDefinition="LONGTEXT")
     private String cuerpo;
 
-    private Date fecha_publicacion;
+    private Date fecha;
 
     @ManyToOne
     private Usuario usuario;
@@ -54,12 +54,12 @@ public class Articulo implements Serializable {
         this.listaComentarios = listaComentarios;
     }
 
-    public Long getCodigo() {
-        return codigo;
+    public long getId() {
+        return id;
     }
 
-    public void setCodigo(Long codigo) {
-        this.codigo = codigo;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitulo() {
@@ -78,12 +78,12 @@ public class Articulo implements Serializable {
         this.cuerpo = cuerpo;
     }
 
-    public Date getFecha_publicacion() {
-        return fecha_publicacion;
+    public Date getFecha() {
+        return fecha;
     }
 
-    public void setFecha_publicacion(Date fecha_publicacion) {
-        this.fecha_publicacion = fecha_publicacion;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
     public Usuario getUsuario() {

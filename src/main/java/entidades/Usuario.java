@@ -8,7 +8,12 @@ import javax.persistence.criteria.Fetch;
 
 /*Pasos:
 * 1. Crear POJO
-* 2. Anotar la clase como entidad (luego de importar javax.persistence.*/
+* 2. Anotar la clase como entidad (luego de importar javax.persistence)
+* 3. Anotar los atributos que poseen características relacionales. Ej: Articulos:
+*   "Un usuario tiene varios Artículos" y el ORM no va a adivinarlo.
+* 4. Indicar la cardinalidad de la relación: "El usuario es quien tiene varios articulos", así que este atributo debe
+* de ser "mappedBy = usuario".
+* 5. Indicar el tipo de carga.*/
 @Entity
 public class Usuario implements Serializable {
     @Id
@@ -18,11 +23,11 @@ public class Usuario implements Serializable {
     private boolean administrator;
     private boolean author;
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private Set<Comentario> misComentarios;
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private Set<Articulo> misArticulos;
-    @OneToMany(mappedBy = "usuarioLike", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "usuarioLike", fetch = FetchType.LAZY)
     private Set<Like> misLikes;
     @OneToMany(mappedBy = "usuario")
     private Set <Dislike> misDislikes;

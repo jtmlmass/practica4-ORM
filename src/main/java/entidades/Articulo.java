@@ -38,8 +38,8 @@ public class Articulo implements Serializable {
     @OneToMany(mappedBy = "articulo", fetch = FetchType.EAGER)
     private Set<Comentario> listaComentarios;
 
-    @OneToMany(mappedBy = "articuloLike", fetch = FetchType.EAGER)
-    private Set<Like> listaLike;
+    @OneToMany(mappedBy = "articuloLiked", fetch = FetchType.EAGER)
+    private Set<Like> listaLiked;
 
     @OneToMany(mappedBy = "articulo", fetch = FetchType.EAGER)
     private Set<Dislike> listaDislike;
@@ -103,11 +103,11 @@ public class Articulo implements Serializable {
     }
 
     public Set<Like> getListaLike() {
-        return listaLike;
+        return listaLiked;
     }
 
     public void setListaLike(Set<Like> listaLike) {
-        this.listaLike = listaLike;
+        this.listaLiked = listaLike;
     }
 
     public Set<Dislike> getListaDislike() {

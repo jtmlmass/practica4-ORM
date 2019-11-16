@@ -27,7 +27,7 @@ public class Usuario implements Serializable {
     private Set<Comentario> misComentarios;
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private Set<Articulo> misArticulos;
-    @OneToMany(mappedBy = "usuarioLike", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuarioLiked", fetch = FetchType.LAZY)
     private Set<Like> misLikes;
     @OneToMany(mappedBy = "usuario")
     private Set <Dislike> misDislikes;

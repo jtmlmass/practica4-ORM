@@ -519,8 +519,6 @@ public class Main {
         UsuarioService.getInstance().crear(adminUser);
         UsuarioService.getInstance().crear(chema);
         UsuarioService.getInstance().findAll();
-        System.out.println(UsuarioService.getInstance().find(chema).toString());
-        System.out.println(UsuarioService.getInstance().find(chemaMod).toString());
         UsuarioService.getInstance().editar(chemaMod);
         UsuarioService.getInstance().findAll();
         UsuarioService.getInstance().eliminar(chemaMod);

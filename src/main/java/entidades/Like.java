@@ -4,17 +4,17 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "like")
+@Table(name = "Like")
 public class Like implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Usuario usuarioLike;
+    private Usuario usuarioLiked;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Articulo articuloLike;
+    private Articulo articuloLiked;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Comentario comentario;
@@ -27,20 +27,20 @@ public class Like implements Serializable {
         this.id = id;
     }
 
-    public Usuario getUsuarioLike() {
-        return usuarioLike;
+    public Usuario getUsuarioLiked() {
+        return usuarioLiked;
     }
 
-    public void setUsuarioLike(Usuario usuarioLike) {
-        this.usuarioLike = usuarioLike;
+    public void setUsuarioLiked(Usuario usuarioLike) {
+        this.usuarioLiked = usuarioLike;
     }
 
     public Articulo getArticuloLike() {
-        return articuloLike;
+        return articuloLiked;
     }
 
-    public void setArticuloLike(Articulo articuloLike) {
-        this.articuloLike = articuloLike;
+    public void setArticuloLiked(Articulo articuloLike) {
+        this.articuloLiked = articuloLike;
     }
     public Comentario getComentario() {
         return comentario;

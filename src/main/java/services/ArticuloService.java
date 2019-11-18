@@ -1,9 +1,11 @@
 package services;
 
 import entidades.Articulo;
+import entidades.Usuario;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,5 +53,13 @@ public class ArticuloService extends BaseService<Articulo> {
         Set<Articulo> listaArticulosAux = setUpCuerpoHome(query.getResultList());
 
         return listaArticulosAux;
+    }
+
+    public List<Articulo> selectByUsuario(Usuario usuario){
+        EntityManager entityManager = getEntityManager();
+        String sql = "FROM Articulo WHERE  Articulo.usuario = usuario.id";
+        Query query = entityManager.createQuery(sql);
+        List<Articulo> listaArticulos = new ArrayList<>(setUpCuerpoHome(query.getResultList()));
+        return listaArticulos;
     }
 }

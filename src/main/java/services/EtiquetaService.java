@@ -1,7 +1,14 @@
 package services;
 
 
+import entidades.Articulo;
 import entidades.Etiqueta;
+import entidades.Usuario;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EtiquetaService extends BaseService<Etiqueta> {
     private static EtiquetaService etiquetaServiceIntance;
@@ -16,6 +23,5 @@ public class EtiquetaService extends BaseService<Etiqueta> {
         }
         return etiquetaServiceIntance;
     }
-
 }
 

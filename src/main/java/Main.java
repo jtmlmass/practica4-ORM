@@ -6,26 +6,22 @@ import java.sql.SQLException;
 import java.sql.Date;
 
 import entidades.Articulo;
+import entidades.Comentario;
 import entidades.Etiqueta;
 import entidades.Usuario;
 import org.h2.engine.User;
 import org.jasypt.util.text.StrongTextEncryptor;
-import services.ArticuloService;
-import services.DataBaseService;
-import services.UsuarioService;
+import services.*;
 import servicios.ArticuloServices;
 import servicios.DataBaseServices;
 import servicios.InicioServices;
 import servicios.UsuarioServices;
 import spark.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
 import dao.Dao;
 import dao.UsuarioDao;
-
-import java.util.List;
-import java.util.Optional;
 
 import freemarker.template.Configuration;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -52,6 +48,8 @@ public class Main {
 //        UsuarioServices usuarioServices = new UsuarioServices();
         ArticuloService articuloServices = new ArticuloService();
         UsuarioService usuarioServices = new UsuarioService();
+        ComentarioService comentarioServices = new ComentarioService();
+        EtiquetaService etiquetaServices = new EtiquetaService();
 
         //staticFiles.location("/META-INF/resources"); //para utilizar los WebJars.
         staticFiles.location("/publico");
@@ -185,25 +183,7 @@ public class Main {
             int idArticulo = Integer.parseInt(request.params("id"));
             ArrayList<Etiqueta> auxList = new ArrayList<>();
             String tags = "";
-            Articulo articulo = articuloServices.getArticulo(idArticulo);
-            ArrayList<Etiqueta> misEtiquetas;
-            misEtiquetas = articuloServices.getAllEtiquetas();
-            for (Etiqueta tag : misEtiquetas){
-                if (tag.getArticulo() == idArticulo){
-                    auxList.add(tag);
-                }
-            }
-            int idx = 1;
-            for (Etiqueta tag : auxList){
-                if (idx < auxList.size()){
-                    tags += tag + ", ";
-                    //auxList.add(tag);
-                }else{
-                    tags += tag;
-                }
-                idx++;
-            }
-            //articulo.setListaEtiquetas(auxList);
+            Articulo articulo = articuloServices.find(idArticulo);
             if(session.attribute("usuario") == null || session.attribute("usuario") == ""){
                 response.redirect("/login");
             }
@@ -230,21 +210,31 @@ public class Main {
         }, freeMarkerEngine);
 
         Spark.post("/postArticulo/", (request, response) -> {
-            Session session = request.session(true);
             String titulo = request.queryParams("titulo");
             String cuerpo = request.queryParams("cuerpo");
-            String autor = session.attribute("usuario").toString();
+            StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
+            textEncryptor.setPassword(encriptorClave);
+            Usuario autor = new Usuario();
+            if(request.cookie("username") != null){
+                autor = new Usuario(
+                        textEncryptor.decrypt(request.cookie("username")),
+                        textEncryptor.decrypt(request.cookie("nombre")),
+                        textEncryptor.decrypt(request.cookie("password")),
+                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isadmin"))),
+                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
+                );
+            }
             Date fecha = new Date(System.currentTimeMillis());
-            Articulo articulo = new Articulo(titulo, cuerpo, autor, fecha);
-            int idArt = articuloServices.insertArticulo(articulo);
+            Articulo articulo = new Articulo(titulo, cuerpo, fecha, autor);
+            articuloServices.crear(articulo);
             String etiquetas = request.queryParams("etiquetas");
             String inputTags[] = etiquetas.split(",");
-            ArrayList<Etiqueta> auxList = new ArrayList<>();
+            Set<Etiqueta> auxList = new HashSet<>();
             for (String etiqueta: inputTags) {
                 Etiqueta etiquetaAux = new Etiqueta();
-                etiquetaAux.setEtiqueta(etiqueta);
-                etiquetaAux.setArticulo(idArt);
-                articuloServices.crearEtiqueta(etiquetaAux);
+                etiquetaAux.setNombre(etiqueta);
+                etiquetaAux.etiquetarArticulo(articulo);
+                etiquetaServices.crear(etiquetaAux);
                 auxList.add(etiquetaAux);
             }
             articulo.setListaEtiquetas(auxList);
@@ -261,23 +251,23 @@ public class Main {
             int idArt = Integer.parseInt(request.params("id"));
             System.out.println(idArt);
 
-            Articulo articulo = articuloServices.getArticulo(idArt);
+            Articulo articulo = articuloServices.find(idArt);
             articulo.setCuerpo(request.queryParams("cuerpo"));
             articulo.setTitulo(request.queryParams("titulo"));
             //Enviar a una función:
             String etiquetas = request.queryParams("etiquetas");
             String inputTags[] = etiquetas.split(",");
-            ArrayList<Etiqueta> auxList = new ArrayList<>();
+            Set<Etiqueta> auxList = new HashSet<>();
             for (String etiqueta: inputTags) {
                 Etiqueta etiquetaAux = new Etiqueta();
-                etiquetaAux.setEtiqueta(etiqueta);
-                etiquetaAux.setArticulo(idArt);
-                articuloServices.crearEtiqueta(etiquetaAux);
+                etiquetaAux.setNombre(etiqueta);
+                etiquetaAux.etiquetarArticulo(articulo);
+                etiquetaServices.crear(etiquetaAux);
                 auxList.add(etiquetaAux);
             }
             articulo.setListaEtiquetas(auxList);
             //**********************************
-            articuloServices.updateArticulo(articulo);
+            articuloServices.editar(articulo);
             response.redirect("/articulo/" + String.valueOf(articulo.getId()));
             return null;
         }, freeMarkerEngine);
@@ -285,7 +275,7 @@ public class Main {
         Spark.get("/articulo/:id", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             int idArticulo = Integer.parseInt(request.params("id"));
-            Articulo articulo = articuloServices.getArticulo(idArticulo);
+            Articulo articulo = articuloServices.find(idArticulo);
             System.out.println(articulo);
 //            ArrayList<Etiqueta> auxList = new ArrayList<>();
 //            ArrayList<Etiqueta> misEtiquetas;
@@ -310,7 +300,7 @@ public class Main {
                         Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
                 );
                 attributes.put("usuario", usuario);
-                Usuario userAux = usuarioServices.getUsuario(usuario.getUsername());
+                Usuario userAux = usuarioServices.find(usuario.getUsername());
                 if (userAux != null){
                     attributes.put("isAdmin", userAux.isAdministrator());
                 }
@@ -324,7 +314,7 @@ public class Main {
         Spark.get("/author/:username", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             String username = request.params("username");
-            Usuario author = usuarioServices.getUsuario(username);
+            Usuario author = usuarioServices.find(username);
             attributes.put("author", author);
             StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
             textEncryptor.setPassword(encriptorClave);
@@ -372,7 +362,7 @@ public class Main {
 
         Spark.post("/hacerLogin/", (request, response) -> {
             Session session = request.session(true);
-            List<Usuario> usuarios = usuarioServices.getAllUsuarios();
+            List<Usuario> usuarios = usuarioServices.findAll();
             Usuario usuario = null;
             String username = request.queryParams("username");
             String password = request.queryParams("password");
@@ -419,7 +409,7 @@ public class Main {
             }
             System.out.println(request.queryParams("isauthor"));
             Usuario usuario = new Usuario(username, nombre, password, isadmin, isauthor);
-            usuarioServices.crearUsuario(usuario);
+            usuarioServices.crear(usuario);
 
             //redireccionado a la otra URL.
             response.redirect("/login");
@@ -468,25 +458,24 @@ public class Main {
                     Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isadmin"))),
                     Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
             );
-            String username = usuario.getUsername();
             //String usuario = textEncryptor.decrypt(request.cookie("usuario"));
             if (session.attribute("usuario") != null || session.attribute("usuario") != "") {
                 Comentario coment = new Comentario();
                 coment.setComentario(comentario);
-                coment.setAutor(username);
-                articuloServices.crearComentario(coment, codigo);
+                coment.setUsuario(usuario);
+                comentarioServices.crear(coment);
                 response.redirect("/articulo/" + String.valueOf(codigo));
             }
             response.redirect("/articulo/" + String.valueOf(codigo));
             return null;
         }, freeMarkerEngine);
         Spark.get("/eliminarComentario/:idComentario/:idArticulo", (request, response) -> {
-            articuloServices.borrarComentario(Integer.parseInt(request.params("idComentario")));
+            comentarioServices.eliminar(Integer.parseInt(request.params("idComentario")));
             response.redirect("/articulo/" + String.valueOf(request.params("idArticulo")));
             return null;
         }, freeMarkerEngine);
         Spark.get("/eliminarArticulo/:idArticulo", (request, response) -> {
-            articuloServices.borrarArticulo(Integer.parseInt(request.params("idArticulo")));
+            articuloServices.eliminar(Integer.parseInt(request.params("idArticulo")));
             response.redirect("/home");
             return null;
         }, freeMarkerEngine);

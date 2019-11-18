@@ -3,6 +3,7 @@ package entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
@@ -45,6 +46,17 @@ public class Articulo implements Serializable {
     private Set<Dislike> listaDislike;
 
     public Articulo() {}
+
+    public Articulo(String titulo, String cuerpo, Date fecha, Usuario usuario) {
+        this.titulo = titulo;
+        this.cuerpo = cuerpo;
+        this.fecha = fecha;
+        this.usuario = usuario;
+        this.listaEtiquetas = Collections.<Etiqueta>emptySet();
+        this.listaComentarios = Collections.<Comentario>emptySet();
+        this.listaLiked = Collections.<Like>emptySet();
+        this.listaDislike = Collections.<Dislike>emptySet();
+    }
 
     public Set<Comentario> getListaComentarios() {
         return listaComentarios;

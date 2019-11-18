@@ -37,4 +37,17 @@ public class Etiqueta implements Serializable {
     public void setArticulo(Set<Articulo> articulo) {
         this.listaArticulos = articulo;
     }
+
+    public void etiquetarArticulo(Articulo articulo){
+        this.listaArticulos.add(articulo);
+    }
+
+    public Articulo obtenerArticulo(Articulo articulo){
+        for(Articulo a : this.listaArticulos){
+            if(a.equals(articulo)){
+                return a;
+            }
+        }
+        return null;
+    }
 }

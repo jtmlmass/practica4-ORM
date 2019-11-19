@@ -5,9 +5,11 @@ import java.sql.Array;
 import java.sql.SQLException;
 import java.sql.Date;
 
+import entidades.Articulo;
 import entidades.Usuario;
 import org.h2.engine.User;
 import org.jasypt.util.text.StrongTextEncryptor;
+import services.ArticuloService;
 import services.DataBaseService;
 import services.UsuarioService;
 import servicios.ArticuloServices;
@@ -15,6 +17,8 @@ import servicios.DataBaseServices;
 import servicios.InicioServices;
 import servicios.UsuarioServices;
 import spark.*;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +62,29 @@ public class Main {
         FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
 
         //Etiqueta auxEtiqueta = new Etiqueta();
-        pruebaUsuario();
+        Usuario adminUser = new Usuario(
+                "administrador",
+                "administrador",
+                "administrador",
+                true,
+                false
+        );
+        Usuario chema = new Usuario(
+                "chema ",
+                "Jose Martinez",
+                "chemin",
+                true,
+                true
+        );
+        Usuario chemaMod = new Usuario(
+                "chema ",
+                "Jose Manuel Martinez",
+                "chemin",
+                true,
+                false
+        );
+        //pruebaUsuario(adminUser, chema, chemaMod);
+        pruebaArticulo(adminUser, chema, chemaMod);
 
 //        before("*", (request, response) -> {
 //            Session session = request.session(true);
@@ -494,37 +520,34 @@ public class Main {
 ////        });
     }
 
-    private static void pruebaUsuario() {
-        Usuario adminUser = new Usuario(
-                "administrador",
-                "administrador",
-                "administrador",
-                true,
-                false
-        );
-        Usuario chema = new Usuario(
-                "chema ",
-                "Jose Martinez",
-                "chemin",
-                true,
-                true
-        );
-        Usuario chemaMod = new Usuario(
-                "chema ",
-                "Jose Manuel Martinez",
-                "chemin",
-                true,
-                false
-        );
+    private static void pruebaUsuario(Usuario adminUser, Usuario chema, Usuario chemaMod) {
         UsuarioService.getInstance().crear(adminUser);
         UsuarioService.getInstance().crear(chema);
-        UsuarioService.getInstance().findAll();
         UsuarioService.getInstance().editar(chemaMod);
-        UsuarioService.getInstance().findAll();
-        UsuarioService.getInstance().eliminar("chema ");
-        UsuarioService.getInstance().findAll();
+    }
 
-
+    private static void pruebaArticulo(Usuario adminUser, Usuario chema, Usuario chemaMod){
+        Articulo articulo1 = new Articulo(
+                "Cásate con Flask y Python.",
+                "¿Qué es Flask? Flask es un microframework web ligero creado con el lenguaje de programación Python, esta diseñado para iniciar un proyecto rápido y fácil, tiene la facilidad de pasar de un proyecto simple a uno complejo.",
+                Date.valueOf(LocalDate.now()),
+                chema
+        );
+        Articulo articulo2 = new Articulo(              "Java, Spring Boot y Vaadin 14",
+                "Con la llegada de más Frameworks orientados a componentes, el desarrollo en java para aplicaciones mas modernas es más intenso y esto a hecho evolucionar a Vaadin a un punto donde el diseñador, el desarrollador BackEnd y el hecho de usar componentes web ya es una realidad en java con una integración muy sencilla usando Vaadin 14.",
+                Date.valueOf(LocalDate.now()),
+                adminUser);
+        Articulo articulo2Mod = new Articulo(
+                "Java, Spring Boot y Vaadin 14",
+                "Con la llegada de más Frameworks orientados a componentes, el desarrollo en java para aplicaciones mas modernas es más intenso y esto a hecho evolucionar a Vaadin a un punto donde el diseñador, el desarrollador BackEnd.",
+                Date.valueOf(LocalDate.now()),
+                adminUser
+        );
+        ArticuloService.getInstance().crear(articulo1);
+        ArticuloService.getInstance().crear(articulo2);
+        ArticuloService.getInstance().editar(articulo2Mod);
+        System.out.println(ArticuloService.getInstance().findAll());
+        ArticuloService.getInstance().eliminar(articulo1.getId());
     }
 
     private static void createEntities(){

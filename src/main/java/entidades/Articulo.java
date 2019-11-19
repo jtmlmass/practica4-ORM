@@ -30,7 +30,7 @@ public class Articulo implements Serializable {
     private Date fecha;
 
     @ManyToOne
-    private Usuario usuario;
+    private Usuario autor;
 
     @ManyToMany(mappedBy = "listaArticulos", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Etiqueta> listaEtiquetas;
@@ -45,6 +45,10 @@ public class Articulo implements Serializable {
     private Set<Dislike> listaDislike;
 
     public Articulo() {}
+    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor) {}
+    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor, Set<Comentario> listaComentarios){}
+    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor, Set<Like> listaLiked, Set<Dislike> listaDisiked) {}
+    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor, Set<Comentario> listaComentarios, Set<Like> listaLiked, Set<Dislike> listaDisiked) {}
 
     public Set<Comentario> getListaComentarios() {
         return listaComentarios;
@@ -86,12 +90,12 @@ public class Articulo implements Serializable {
         this.fecha = fecha;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Usuario getAutor() {
+        return autor;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setAutor(Usuario autor) {
+        this.autor = autor;
     }
 
     public Set<Etiqueta> getListaEtiquetas() {

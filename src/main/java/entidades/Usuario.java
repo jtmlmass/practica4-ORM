@@ -4,7 +4,6 @@ package entidades;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.*;
-import javax.persistence.criteria.Fetch;
 
 /*Pasos:
 * 1. Crear POJO
@@ -25,7 +24,7 @@ public class Usuario implements Serializable {
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private Set<Comentario> misComentarios;
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "autor", fetch = FetchType.LAZY)
     private Set<Articulo> misArticulos;
     @OneToMany(mappedBy = "usuarioLiked", fetch = FetchType.LAZY)
     private Set<Like> misLikes;

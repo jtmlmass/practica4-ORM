@@ -59,7 +59,8 @@ public class BaseService<T>{
      */
     public void crear(T entidad){
         EntityManager entityManager = getEntityManager();
-
+        System.out.println("========!!!=============");
+        System.out.println(entidad.toString());
         try {
             if (entityManager.find(claseEntidad, getValorCampo(entidad)) != null) {
                 System.out.println("La entidad a guardar existe, no creada.");

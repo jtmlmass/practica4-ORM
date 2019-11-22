@@ -522,21 +522,20 @@ public class Main {
                 Date.valueOf(LocalDate.now()),
                 chema
         );
-        Articulo articulo2 = new Articulo(              "Java, Spring Boot y Vaadin 14",
+        /*
+
+        */
+        Articulo articulo2 = new Articulo("Cásate con Flask y Python.",
+                "¿Qué es Flask? Flask es un microframework web ligero creado con el lenguaje de programación Python, esta diseñado para iniciar un proyecto rápido y fácil, tiene la facilidad de pasar de un proyecto simple a uno complejo.",
+                Date.valueOf(LocalDate.now()),
+                chema);
+
+        Articulo articulo2Mod = new Articulo("Java, Spring Boot y Vaadin 14",
                 "Con la llegada de más Frameworks orientados a componentes, el desarrollo en java para aplicaciones mas modernas es más intenso y esto a hecho evolucionar a Vaadin a un punto donde el diseñador, el desarrollador BackEnd y el hecho de usar componentes web ya es una realidad en java con una integración muy sencilla usando Vaadin 14.",
                 Date.valueOf(LocalDate.now()),
                 adminUser);
-        Articulo articulo2Mod = new Articulo(
-                "Java, Spring Boot y Vaadin 14",
-                "Con la llegada de más Frameworks orientados a componentes, el desarrollo en java para aplicaciones mas modernas es más intenso y esto a hecho evolucionar a Vaadin a un punto donde el diseñador, el desarrollador BackEnd.",
-                Date.valueOf(LocalDate.now()),
-                adminUser
-        );
         ArticuloService.getInstance().crear(articulo1);
         ArticuloService.getInstance().crear(articulo2);
-        ArticuloService.getInstance().editar(articulo2Mod);
-        System.out.println(ArticuloService.getInstance().findAll());
-        ArticuloService.getInstance().eliminar(articulo1.getId());
     }
 
     private static void createEntities(){

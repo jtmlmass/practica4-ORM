@@ -46,21 +46,21 @@ public class Articulo implements Serializable {
     private Set<Dislike> listaDislike;
 
     public Articulo() {}
-    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor) {}
-    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor, Set<Comentario> listaComentarios){}
-    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor, Set<Like> listaLiked, Set<Dislike> listaDisiked) {}
-    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor, Set<Comentario> listaComentarios, Set<Like> listaLiked, Set<Dislike> listaDisiked) {}
-
     public Articulo(String titulo, String cuerpo, Date fecha, Usuario usuario) {
         this.titulo = titulo;
         this.cuerpo = cuerpo;
         this.fecha = fecha;
-        this.usuario = usuario;
+        this.autor = usuario;
         this.listaEtiquetas = Collections.<Etiqueta>emptySet();
         this.listaComentarios = Collections.<Comentario>emptySet();
         this.listaLiked = Collections.<Like>emptySet();
         this.listaDislike = Collections.<Dislike>emptySet();
     }
+    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor, Set<Comentario> listaComentarios){}
+    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor, Set<Like> listaLiked, Set<Dislike> listaDisiked) {}
+    public Articulo(String titulo, String cuerpo, Date fecha, Usuario autor, Set<Comentario> listaComentarios, Set<Like> listaLiked, Set<Dislike> listaDisiked) {}
+
+
 
     public Set<Comentario> getListaComentarios() {
         return listaComentarios;

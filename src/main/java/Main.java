@@ -82,7 +82,7 @@ public class Main {
                 false
         );
         //pruebaUsuario(adminUser, chema, chemaMod);
-        pruebaArticulo(adminUser, chema, chemaMod);
+        //pruebaArticulo(adminUser, chema, chemaMod);
 
         before("*", (request, response) -> {
             Session session = request.session(true);
@@ -202,7 +202,7 @@ public class Main {
         Spark.get("/editarArticulo/:id", (request, response) -> {
             Session session = request.session(true);
             Map<String, Object> attributes = new HashMap<>();
-            int idArticulo = Integer.parseInt(request.params("id"));
+            long idArticulo = Long.parseLong(request.params("id"));
             ArrayList<Etiqueta> auxList = new ArrayList<>();
             String tags = "";
             Articulo articulo = articuloServices.find(idArticulo);
@@ -248,18 +248,20 @@ public class Main {
             }
             Date fecha = new Date(System.currentTimeMillis());
             Articulo articulo = new Articulo(titulo, cuerpo, fecha, autor);
-            articuloServices.crear(articulo);
             String etiquetas = request.queryParams("etiquetas");
             String inputTags[] = etiquetas.split(",");
             Set<Etiqueta> auxList = new HashSet<>();
             for (String etiqueta: inputTags) {
                 Etiqueta etiquetaAux = new Etiqueta();
                 etiquetaAux.setNombre(etiqueta);
-                etiquetaAux.etiquetarArticulo(articulo);
+                Set<Articulo> articulos = new HashSet<>();
+                etiquetaAux.setArticulo(articulos);
+                //etiquetaAux.etiquetarArticulo(articulo);
                 etiquetaServices.crear(etiquetaAux);
                 auxList.add(etiquetaAux);
             }
             articulo.setListaEtiquetas(auxList);
+            ArticuloService.getInstance().crear(articulo);
             //misEstudiantes.add(estudiante);
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "New Article");
@@ -270,7 +272,7 @@ public class Main {
         }, freeMarkerEngine);
 
         Spark.post("/editarPost/:id", (request, response) -> {
-            int idArt = Integer.parseInt(request.params("id"));
+            long idArt = Long.parseLong(request.params("id"));
             System.out.println(idArt);
 
             Articulo articulo = articuloServices.find(idArt);
@@ -279,35 +281,67 @@ public class Main {
             //Enviar a una función:
             String etiquetas = request.queryParams("etiquetas");
             String inputTags[] = etiquetas.split(",");
+            //filtrarEtiqueta.
             Set<Etiqueta> auxList = new HashSet<>();
             for (String etiqueta: inputTags) {
-                Etiqueta etiquetaAux = new Etiqueta();
-                etiquetaAux.setNombre(etiqueta);
-                etiquetaAux.etiquetarArticulo(articulo);
-                etiquetaServices.crear(etiquetaAux);
-                auxList.add(etiquetaAux);
+                Etiqueta etiquetaExistente = EtiquetaService.getInstance()
+                        .findByColumn(Arrays.asList("nombre"), Arrays.asList(etiqueta));
+                if (etiquetaExistente != null){
+                    auxList.add(etiquetaExistente);
+                }else{
+                    Etiqueta etiquetaAux = new Etiqueta();
+                    etiquetaAux.setNombre(etiqueta);
+                    Set<Articulo> articulos = new HashSet<>();
+                    etiquetaAux.setArticulo(articulos);
+                    //etiquetaAux.etiquetarArticulo(articulo);
+                    etiquetaServices.crear(etiquetaAux);
+                    auxList.add(etiquetaAux);
+                }
+            }
+            for (Etiqueta et: articulo.getListaEtiquetas()){
+                boolean included = true;
+                for (Etiqueta tag: auxList){
+                    if (tag.getNombre() == et.getNombre()){
+                        included = false;
+                    }
+                }if (included == true){
+                    et.getArticulo().remove(articulo);
+                    EtiquetaService.getInstance().editar(et);
+                }
+            }
+            for (Etiqueta tag: auxList){
+                Etiqueta etiquetaExiste = EtiquetaService.getInstance()
+                        .findByColumn(Arrays.asList("nombre"), Arrays.asList(tag.getNombre()));
+                if (etiquetaExiste == null){
+
+                }else{
+                    boolean included = true;
+                    for (Etiqueta et: articulo.getListaEtiquetas()) {
+                        if(et.getNombre() == tag.getNombre()) {
+                            included = false;
+                        }
+                    }
+                    if(included == true) {
+                        tag.getArticulo().add(articulo);
+                        EtiquetaService.getInstance().editar(tag);
+                    }
+                }
             }
             articulo.setListaEtiquetas(auxList);
             //**********************************
-            articuloServices.editar(articulo);
+            ArticuloService.getInstance().editar(articulo);
             response.redirect("/articulo/" + String.valueOf(articulo.getId()));
             return null;
         }, freeMarkerEngine);
 
         Spark.get("/articulo/:id", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-            int idArticulo = Integer.parseInt(request.params("id"));
+            long idArticulo = Long.parseLong(request.params("id"));
             Articulo articulo = articuloServices.find(idArticulo);
-            System.out.println(articulo);
-//            ArrayList<Etiqueta> auxList = new ArrayList<>();
-//            ArrayList<Etiqueta> misEtiquetas;
-//            misEtiquetas = articuloServices.getAllEtiquetas();
-//            for (Etiqueta tag : misEtiquetas){
-//                if (tag.getArticulo() == idArticulo){
-//                    auxList.add(tag);
-//                }
-//            }
-//            articulo.setListaEtiquetas(auxList);
+            //System.out.println(articulo);
+            for (Comentario comment : articulo.getListaComentarios()){
+                System.out.println(comment.getComentario());
+            }
             attributes.put("articulo", articulo);
             System.out.println(articulo.getListaEtiquetas().toString());
             StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
@@ -465,11 +499,11 @@ public class Main {
         });
 
         Spark.post("/comentar/:id", (request, response) -> {
-            int codigo = Integer.valueOf(request.params("id"));
+            long codigo = Long.valueOf(request.params("id"));
             String comentario = request.queryParams("comentario");
             //StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
             //textEncryptor.setPassword(contrasenia);
-
+            Articulo articulo = ArticuloService.getInstance().find(codigo);
             Session session = request.session(true);
             StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
             textEncryptor.setPassword(encriptorClave);
@@ -482,22 +516,24 @@ public class Main {
             );
             //String usuario = textEncryptor.decrypt(request.cookie("usuario"));
             if (session.attribute("usuario") != null || session.attribute("usuario") != "") {
-                Comentario coment = new Comentario();
-                coment.setComentario(comentario);
-                coment.setUsuario(usuario);
-                comentarioServices.crear(coment);
+                Comentario comment = new Comentario();
+                comment.setComentario(comentario);
+                comment.setUsuario(usuario);
+                comment.setArticulo(articulo);
+                comentarioServices.crear(comment);
                 response.redirect("/articulo/" + String.valueOf(codigo));
             }
             response.redirect("/articulo/" + String.valueOf(codigo));
             return null;
         }, freeMarkerEngine);
+
         Spark.get("/eliminarComentario/:idComentario/:idArticulo", (request, response) -> {
-            comentarioServices.eliminar(Integer.parseInt(request.params("idComentario")));
+            comentarioServices.eliminar(Long.parseLong(request.params("idComentario")));
             response.redirect("/articulo/" + String.valueOf(request.params("idArticulo")));
             return null;
         }, freeMarkerEngine);
         Spark.get("/eliminarArticulo/:idArticulo", (request, response) -> {
-            articuloServices.eliminar(Integer.parseInt(request.params("idArticulo")));
+            articuloServices.eliminar(Long.parseLong(request.params("idArticulo")));
             response.redirect("/home");
             return null;
         }, freeMarkerEngine);

@@ -65,14 +65,14 @@
                         <#if editable != "si">
                             <h2 class="card-title"><a href="/articulo/${art.id}">${art.titulo}</a></h2>
                         </#if>
-                        <h6 class="card-blockquote text-muted">${art.selectCuerpoHome()} ...</h6>
+                        <h6 class="card-blockquote text-muted">${art.cuerpo} ...</h6>
                         <div class="metafooter">
                             <div class="wrapfooter">
                             <span class="meta-footer-thumb">
                             <a href="/author"><img class="author-thumb" src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&amp;d=mm&amp;r=x" alt="Sal"></a>
                             </span>
                                 <span class="author-meta">
-                            <span class="post-name"><a href="/author">${art.autor}</a></span><br/>
+                            <span class="post-name"><a href="/author">${art.autor.username}</a></span><br/>
                             <span class="post-date">${art.fecha}</span><span class="dot"></span>
                             </span>
                                 <span class="post-read-more"><a href="/articulo/${art.id}" title="Read Story">

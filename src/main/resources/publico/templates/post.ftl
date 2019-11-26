@@ -75,7 +75,7 @@
                     </div>
                     <div class="col-md-10">
                         <!--SI EXPLOTA ES PQ EL USUARIO NO SE HA LOGGED IN-->
-                        <a class="link-dark" href="author.html">${articulo.autor}</a><a href="#" class="btn follow">Follow</a>
+                        <a class="link-dark" href="author.html">${articulo.autor.username}</a><a href="#" class="btn follow">Follow</a>
                         <span class="author-description">Computer Science professional. Cheif SE editor since 2017.</span>
                         <span class="post-date">${articulo.fecha}</span><span class="dot"></span><span class="post-read">6 min read</span>
                     </div>
@@ -98,7 +98,7 @@
             <div class="after-post-tags">
                 <ul class="tags">
                     <#list articulo.listaEtiquetas as art>
-                    <li><a href="#">${art.etiqueta}</a></li>
+                    <li><a href="#">${art.nombre}</a></li>
                     </#list>
                 </ul>
             </div>
@@ -144,7 +144,7 @@
                                         <#if usuario != "" && isAdmin>
                                             <span class="btn btn-danger btn-sm pull-right"><a class="text-white" href="/eliminarComentario/${comment.id}/${articulo.id}">Eliminar</a></span>
                                         </#if>
-                                        <strong class="text-success">${comment.autor}</strong>
+                                        <strong class="text-success">${comment.usuario.username}</strong>
                                         <p>
                                             ${comment.comentario}
                                         </p>

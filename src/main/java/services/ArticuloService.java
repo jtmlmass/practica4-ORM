@@ -57,9 +57,13 @@ public class ArticuloService extends BaseService<Articulo> {
 
     public List<Articulo> selectByUsuario(Usuario usuario){
         EntityManager entityManager = getEntityManager();
-        String sql = "FROM Articulo WHERE  Articulo.usuario = usuario.id";
+        String sql = "SELECT a FROM Articulo a, Usuario u WHERE a.autor.id = u.id";
         Query query = entityManager.createQuery(sql);
-        List<Articulo> listaArticulos = new ArrayList<>(setUpCuerpoHome(query.getResultList()));
+        System.out.println(query.getResultList());
+        List<Articulo> listaArticulos = new ArrayList<>(query.getResultList());
+        for (Articulo aux: listaArticulos){
+            System.out.println((aux.getTitulo()));
+        }
         return listaArticulos;
     }
 }

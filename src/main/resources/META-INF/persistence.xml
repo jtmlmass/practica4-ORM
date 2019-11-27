@@ -11,6 +11,7 @@
         <class>entidades.Dislike</class>
         <class>entidades.Etiqueta</class>
         <class>entidades.Like</class>
+        <class>entidades.Reaccion</class>
         <properties>
             <!--<property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:test" />-->
             <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/sparkjavaorm4" />

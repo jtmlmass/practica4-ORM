@@ -2,7 +2,6 @@ package entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Set;
 
 @Entity
@@ -40,9 +39,6 @@ public class Etiqueta implements Serializable {
     }
 
     public void etiquetarArticulo(Articulo articulo){
-        if(this.listaArticulos == null){
-            this.listaArticulos = Collections.<Articulo>emptySet();
-        }
         this.listaArticulos.add(articulo);
     }
 

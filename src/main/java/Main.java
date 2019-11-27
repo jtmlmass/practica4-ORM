@@ -278,7 +278,7 @@ public class Main {
             Articulo articulo = articuloServices.find(idArt);
             articulo.setCuerpo(request.queryParams("cuerpo"));
             articulo.setTitulo(request.queryParams("titulo"));
-            //Enviar a una función:
+            //Enviar a una función
             String etiquetas = request.queryParams("etiquetas");
             String inputTags[] = etiquetas.split(",");
             //filtrarEtiqueta.

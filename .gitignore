@@ -76,3 +76,7 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
+
+jdbc:h2:tcp:/localhost/~/sparkjavaorm4default.mv.db
+
+.idea/dataSources.xml

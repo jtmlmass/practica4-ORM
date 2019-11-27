@@ -23,13 +23,18 @@ public class Reaccion {
     @Enumerated(EnumType.STRING)
     private TipoReaccion tipoReaccion;
 
+
+    private String icono;
+
     public Reaccion() {
     }
 
-    public Reaccion(Usuario usuarioLiked, Articulo articuloLiked, Comentario comentario) {
+    public Reaccion(Usuario usuarioLiked, Articulo articuloLiked, Comentario comentario, TipoReaccion tipoReaccion, String icono) {
         this.usuarioLiked = usuarioLiked;
         this.articuloLiked = articuloLiked;
         this.comentario = comentario;
+        this.tipoReaccion = tipoReaccion;
+        this.icono = icono;
     }
 
     public Long getId() {
@@ -62,6 +67,22 @@ public class Reaccion {
 
     public void setComentario(Comentario comentario) {
         this.comentario = comentario;
+    }
+
+    public TipoReaccion getTipoReaccion() {
+        return tipoReaccion;
+    }
+
+    public void setTipoReaccion(TipoReaccion tipoReaccion) {
+        this.tipoReaccion = tipoReaccion;
+    }
+
+    public String getIcono() {
+        return icono;
+    }
+
+    public void setIcono(String icono) {
+        this.icono = icono;
     }
 
     @Override

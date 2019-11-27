@@ -66,6 +66,15 @@
                             <h2 class="card-title"><a href="/articulo/${art.id}">${art.titulo}</a></h2>
                         </#if>
                         <h6 class="card-blockquote text-muted">${art.cuerpo} ...</h6>
+                        <br>
+                        <!---->
+                        <div class="after-post-tags">
+                            <ul class="tags">
+                                <#list art.listaEtiquetas as tag>
+                                    <li><a href="#">${tag.nombre}</a></li>
+                                </#list>
+                            </ul>
+                        </div>
                         <div class="metafooter">
                             <div class="wrapfooter">
                             <span class="meta-footer-thumb">

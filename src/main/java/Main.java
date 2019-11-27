@@ -248,18 +248,34 @@ public class Main {
             Articulo articulo = new Articulo(titulo, cuerpo, fecha, autor);
             String etiquetas = request.queryParams("etiquetas");
             String[] inputTags = etiquetas.split(",");
+//Filtrar etiqueta
             Set<Etiqueta> auxList = new HashSet<>();
             for (String etiqueta: inputTags) {
-                Etiqueta etiquetaAux = new Etiqueta();
-                etiquetaAux.setNombre(etiqueta);
-                Set<Articulo> articulos = new HashSet<>();
-                etiquetaAux.setArticulo(articulos);
-                //etiquetaAux.etiquetarArticulo(articulo);
-                etiquetaServices.crear(etiquetaAux);
-                auxList.add(etiquetaAux);
+                Etiqueta etiquetaExiste = EtiquetaService.getInstance()
+                        .findByColumn(Arrays.asList("nombre"), Arrays.asList(etiqueta));
+                if (etiquetaExiste != null){
+                    auxList.add(etiquetaExiste);
+                }else {
+                    Etiqueta etiquetaAux = new Etiqueta();
+                    etiquetaAux.setNombre(etiqueta);
+                    Set<Articulo> articulos = new HashSet<>();
+                    articulos.add(articulo);
+                    etiquetaAux.setArticulo(articulos);
+                    auxList.add(etiquetaAux);
+                }
             }
+
             articulo.setListaEtiquetas(auxList);
             ArticuloService.getInstance().crear(articulo);
+            for(Etiqueta etiquetaInstance: articulo.getListaEtiquetas()) {
+                Etiqueta etiquetaExistente = EtiquetaService.getInstance().findByColumn(Arrays.asList("nombre"), Arrays.asList(etiquetaInstance.getNombre()));
+                if (etiquetaExistente == null) {
+                    EtiquetaService.getInstance().crear(etiquetaInstance);
+                } else {
+                    etiquetaExistente.getArticulo().add(articulo);
+                    EtiquetaService.getInstance().editar(etiquetaExistente);
+                }
+            }
             //misEstudiantes.add(estudiante);
             System.out.println(articulo.getListaEtiquetas().toString());
             response.redirect("/home");

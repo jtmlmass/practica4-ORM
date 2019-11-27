@@ -39,17 +39,15 @@ public class Main {
         //Paso 1
         DataBaseService.getInstance().iniciarDb();
 /*Relocate to Function*/
-//        InicioServices.iniciarDb();
-//        DataBaseServices.getInstance().testConexion();
-//        InicioServices.crearTablas();
-//        //InicioServices.crearAdministrador();
-//
-//        ArticuloServices articuloServices = new ArticuloServices();
-//        UsuarioServices usuarioServices = new UsuarioServices();
-        ArticuloService articuloServices = new ArticuloService();
-        UsuarioService usuarioServices = new UsuarioService();
-        ComentarioService comentarioServices = new ComentarioService();
-        EtiquetaService etiquetaServices = new EtiquetaService();
+       //InicioServices.iniciarDb();
+       //DataBaseServices.getInstance().testConexion();
+       //InicioServices.crearTablas();
+       //InicioServices.crearAdministrador();
+
+        final ArticuloService articuloServices = new ArticuloService();
+        final UsuarioService usuarioServices = new UsuarioService();
+        final ComentarioService comentarioServices = new ComentarioService();
+        final EtiquetaService etiquetaServices = new EtiquetaService();
 
         //staticFiles.location("/META-INF/resources"); //para utilizar los WebJars.
         staticFiles.location("/publico");
@@ -249,7 +247,7 @@ public class Main {
             Date fecha = new Date(System.currentTimeMillis());
             Articulo articulo = new Articulo(titulo, cuerpo, fecha, autor);
             String etiquetas = request.queryParams("etiquetas");
-            String inputTags[] = etiquetas.split(",");
+            String[] inputTags = etiquetas.split(",");
             Set<Etiqueta> auxList = new HashSet<>();
             for (String etiqueta: inputTags) {
                 Etiqueta etiquetaAux = new Etiqueta();
@@ -263,10 +261,7 @@ public class Main {
             articulo.setListaEtiquetas(auxList);
             ArticuloService.getInstance().crear(articulo);
             //misEstudiantes.add(estudiante);
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("titulo", "New Article");
             System.out.println(articulo.getListaEtiquetas().toString());
-            attributes.put("articulo", articulo);
             response.redirect("/home");
             return null;
         }, freeMarkerEngine);

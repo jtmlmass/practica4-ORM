@@ -1,6 +1,7 @@
 package services;
 
 import entidades.Articulo;
+import entidades.Etiqueta;
 import entidades.Usuario;
 
 import javax.persistence.EntityManager;
@@ -79,5 +80,17 @@ public class ArticuloService extends BaseService<Articulo> {
         Set<Articulo> listaArticulosAux = setUpCuerpoHome(query.getResultList());
 
         return listaArticulosAux;
+    }
+
+    public List<Articulo> findByTag(Etiqueta etiqueta){
+        EntityManager entityManager = getEntityManager();
+        String sql = "SELECT a FROM Articulo a, Etiqueta tag WHERE a.listaEtiquetas = tag.listaArticulos";
+        Query query = entityManager.createQuery(sql);
+        System.out.println(query.getResultList());
+        List<Articulo> listaArticulos = new ArrayList<>(query.getResultList());
+        for (Articulo aux: listaArticulos){
+            System.out.println((aux.getTitulo()));
+        }
+        return listaArticulos;
     }
 }

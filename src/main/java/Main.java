@@ -120,14 +120,26 @@ public class Main {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Home");
             attributes.put("root", "../assets/");
-            /*TODO: Agregar verificación de que esté logged in.*/
             int numPagina = Integer.valueOf(request.params("numPagina"));
             Set<Articulo> articulos = ArticuloService.getInstance().selectDescDate();
 //            attributes.put("estaLogueado", logged);
-            attributes.put("articulos", articulos);
             attributes.put("paginas", getCantPaginas(articulos.size()/2));
             Set<Articulo> artPaginados = ArticuloService.getInstance().findAllbyPagination(5, numPagina);
             attributes.put("articulos", artPaginados);
+            encriptingCookies(request, attributes);
+            return modelAndView(attributes, "home.ftl");
+        }, freeMarkerEngine);
+        /*TODO: Revisar la efectividad de este método...*/
+        Spark.get("/home/findByTag/:tagId", (request, response) -> {
+            int idTag = Integer.valueOf(request.params("tagId"));
+            Etiqueta tag = EtiquetaService.getInstance().find(idTag);
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("titulo", "Home");
+            attributes.put("root", "../..assets/");
+            int numPagina = Integer.valueOf(request.params("tagId"));
+            Set<Articulo> articulos = ArticuloService.getInstance().selectDescDate();
+            List<Articulo> artByTag = ArticuloService.getInstance().findByTag(tag);
+            attributes.put("articulos", artByTag);
             encriptingCookies(request, attributes);
             return modelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);

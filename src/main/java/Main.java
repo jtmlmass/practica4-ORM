@@ -38,14 +38,7 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         //Paso 1
         DataBaseService.getInstance().iniciarDb();
-/*Relocate to Function*/
-//        InicioServices.iniciarDb();
-//        DataBaseServices.getInstance().testConexion();
-//        InicioServices.crearTablas();
-//        //InicioServices.crearAdministrador();
-//
-//        ArticuloServices articuloServices = new ArticuloServices();
-//        UsuarioServices usuarioServices = new UsuarioServices();
+
         ArticuloService articuloServices = new ArticuloService();
         UsuarioService usuarioServices = new UsuarioService();
         ComentarioService comentarioServices = new ComentarioService();
@@ -331,6 +324,18 @@ public class Main {
             //**********************************
             ArticuloService.getInstance().editar(articulo);
             response.redirect("/articulo/" + String.valueOf(articulo.getId()));
+            return null;
+        }, freeMarkerEngine);
+
+        Spark.post("/postReaccion/:id", (request, response) -> {
+            long idArt = Long.parseLong(request.params("id"));
+            System.out.println(idArt);
+
+            Articulo articulo = articuloServices.find(idArt);
+
+            //**********************************
+            ArticuloService.getInstance().editar(articulo);
+           // response.redirect("/articulo/" + String.valueOf(articulo.getId()));
             return null;
         }, freeMarkerEngine);
 

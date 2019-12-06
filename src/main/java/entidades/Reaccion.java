@@ -2,6 +2,7 @@ package entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 
 @Entity
 @Table(name = "reacciones")
@@ -93,5 +94,16 @@ public class Reaccion {
                 ", articuloLiked=" + articuloLiked +
                 ", comentario=" + comentario +
                 '}';
+    }
+
+    @ManyToMany
+    private Collection<Articulo> articulos;
+
+    public Collection<Articulo> getArticulos() {
+        return articulos;
+    }
+
+    public void setArticulos(Collection<Articulo> articulos) {
+        this.articulos = articulos;
     }
 }

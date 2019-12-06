@@ -133,4 +133,16 @@ public class Articulo implements Serializable {
     public void setListaDislike(Set<Dislike> listaDislike) {
         this.listaDislike = listaDislike;
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Set<Like> getListaLiked() {
+        return listaLiked;
+    }
+
+    public void setListaLiked(Set<Like> listaLiked) {
+        this.listaLiked = listaLiked;
+    }
 }

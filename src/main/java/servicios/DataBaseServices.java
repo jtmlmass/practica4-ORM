@@ -1,4 +1,7 @@
 package servicios;
+import entidades.Usuario;
+import services.UsuarioService;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -43,5 +46,15 @@ public class DataBaseServices {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void crearAdministrador(){
+        Usuario admin = new Usuario(
+                "admin",
+                "admin",
+                "admin",
+                true,
+                false
+        );
     }
 }

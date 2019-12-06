@@ -42,8 +42,6 @@ public class Usuario implements Serializable {
         this.author = author;
     }
 
-
-
     public String getUsername() {
         return username;
     }

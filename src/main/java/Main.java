@@ -5,12 +5,9 @@ import java.sql.Array;
 import java.sql.SQLException;
 import java.sql.Date;
 
-import entidades.Articulo;
+import entidades.*;
 import org.h2.engine.User;
 import org.jasypt.util.text.StrongTextEncryptor;
-import entidades.Comentario;
-import entidades.Etiqueta;
-import entidades.Usuario;
 import services.*;
 import servicios.ArticuloServices;
 import servicios.DataBaseServices;
@@ -557,6 +554,9 @@ public class Main {
             for (Comentario comment : auxArt.getListaComentarios()){
                 ComentarioService.getInstance().eliminar(comment.getId());
             }
+//            for (Reaccion reaccion : auxArt.getListaReacciones()){
+//                ComentarioService.getInstance().eliminar(reaccion.getId());
+//            }
             articuloServices.eliminar(auxArt.getId());
 
             response.redirect("/home");

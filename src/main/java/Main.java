@@ -98,26 +98,43 @@ public class Main {
         Spark.get("/home", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Home");
-            List<Articulo> articulos = articuloServices.findAll();
-            attributes.put("articulos", articulos);
-            attributes.put("editable", "no");
-            StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
-            textEncryptor.setPassword(encriptorClave);
-            Usuario usuario;
-            if(request.cookie("username") != null){
-                usuario = new Usuario(
-                        textEncryptor.decrypt(request.cookie("username")),
-                        textEncryptor.decrypt(request.cookie("nombre")),
-                        textEncryptor.decrypt(request.cookie("password")),
-                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isadmin"))),
-                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
-                );
-                attributes.put("usuario", usuario);
-            }else{
-                attributes.put("usuario", "");
-            }
-
+            attributes.put("root", "assets/");
+            Set<Articulo> articulos = articuloServices.selectDescDate();
+            attributes.put("paginas", getCantPaginas(articulos.size()/2));
+            Set<Articulo> artPaginados = ArticuloService.getInstance()
+                    .findAllbyPagination(5, 1);
+//            attributes.put("articulos", articulos);
+            attributes.put("articulos", artPaginados);
+            encriptingCookies(request, attributes);
             return new ModelAndView(attributes, "home.ftl");
+        }, freeMarkerEngine);
+
+        Spark.get("/home/:numPagina", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("titulo", "Home");
+            attributes.put("root", "../assets/");
+            int numPagina = Integer.valueOf(request.params("numPagina"));
+            Set<Articulo> articulos = ArticuloService.getInstance().selectDescDate();
+//            attributes.put("estaLogueado", logged);
+            attributes.put("paginas", getCantPaginas(articulos.size()/2));
+            Set<Articulo> artPaginados = ArticuloService.getInstance().findAllbyPagination(5, numPagina);
+            attributes.put("articulos", artPaginados);
+            encriptingCookies(request, attributes);
+            return modelAndView(attributes, "home.ftl");
+        }, freeMarkerEngine);
+
+        /*TODO: Revisar la efectividad de este método...*/
+        Spark.get("/home/findByTag/:tagId", (request, response) -> {
+            int idTag = Integer.valueOf(request.params("tagId"));
+            Etiqueta tag = EtiquetaService.getInstance().find(idTag);
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("titulo", "Home");
+            attributes.put("root", "../../assets/");
+            List<Articulo> artsByTag = ArticuloService.getInstance().findByTag(tag);
+            attributes.put("paginas", getCantPaginas(artsByTag.size()/2));
+            attributes.put("articulos", artsByTag);
+            encriptingCookies(request, attributes);
+            return modelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
         Spark.get("/misPosts", (request, response) -> {
@@ -134,7 +151,8 @@ public class Main {
                         Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
                 );
                 attributes.put("usuario", usuario);
-                List<Articulo> articulosUsuario = articuloServices.selectByUsuario(usuario);
+                Set<Articulo> articulosUsuario = articuloServices.selectByUsuario(usuario);
+                attributes.put("paginas", getCantPaginas(articulosUsuario.size()/2));
                 attributes.put("articulos", articulosUsuario);
 
             }else{
@@ -146,6 +164,7 @@ public class Main {
             }
             attributes.put("titulo", "My Posts");
             attributes.put("editable", "si");
+            attributes.put("root", "../assets/");
             return new ModelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
@@ -173,22 +192,7 @@ public class Main {
         Spark.get("/crearArticulo", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Login");
-            attributes.put("editable", "no");
-            StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
-            textEncryptor.setPassword(encriptorClave);
-            Usuario usuario;
-            if(request.cookie("username") != null){
-                usuario = new Usuario(
-                        textEncryptor.decrypt(request.cookie("username")),
-                        textEncryptor.decrypt(request.cookie("nombre")),
-                        textEncryptor.decrypt(request.cookie("password")),
-                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isadmin"))),
-                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
-                );
-                attributes.put("usuario", usuario);
-            }else{
-                attributes.put("usuario", "");
-            }
+            encriptingCookies(request, attributes);
             return new ModelAndView(attributes, "crearArticulo.ftl");
         }, freeMarkerEngine);
 
@@ -242,19 +246,35 @@ public class Main {
             Date fecha = new Date(System.currentTimeMillis());
             Articulo articulo = new Articulo(titulo, cuerpo, fecha, autor);
             String etiquetas = request.queryParams("etiquetas");
-            String inputTags[] = etiquetas.split(",");
+            String[] inputTags = etiquetas.split(",");
+//Filtrar etiqueta
             Set<Etiqueta> auxList = new HashSet<>();
             for (String etiqueta: inputTags) {
-                Etiqueta etiquetaAux = new Etiqueta();
-                etiquetaAux.setNombre(etiqueta);
-                Set<Articulo> articulos = new HashSet<>();
-                etiquetaAux.setArticulo(articulos);
-                //etiquetaAux.etiquetarArticulo(articulo);
-                etiquetaServices.crear(etiquetaAux);
-                auxList.add(etiquetaAux);
+                Etiqueta etiquetaExiste = EtiquetaService.getInstance()
+                        .findByColumn(Arrays.asList("nombre"), Arrays.asList(etiqueta));
+                if (etiquetaExiste != null){
+                    auxList.add(etiquetaExiste);
+                }else {
+                    Etiqueta etiquetaAux = new Etiqueta();
+                    etiquetaAux.setNombre(etiqueta);
+                    Set<Articulo> articulos = new HashSet<>();
+                    articulos.add(articulo);
+                    etiquetaAux.setArticulo(articulos);
+                    auxList.add(etiquetaAux);
+                }
             }
+
             articulo.setListaEtiquetas(auxList);
             ArticuloService.getInstance().crear(articulo);
+            for(Etiqueta etiquetaInstance: articulo.getListaEtiquetas()) {
+                Etiqueta etiquetaExistente = EtiquetaService.getInstance().findByColumn(Arrays.asList("nombre"), Arrays.asList(etiquetaInstance.getNombre()));
+                if (etiquetaExistente == null) {
+                    EtiquetaService.getInstance().crear(etiquetaInstance);
+                } else {
+                    etiquetaExistente.getArticulo().add(articulo);
+                    EtiquetaService.getInstance().editar(etiquetaExistente);
+                }
+            }
             //misEstudiantes.add(estudiante);
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "New Article");
@@ -538,7 +558,12 @@ public class Main {
             return null;
         }, freeMarkerEngine);
         Spark.get("/eliminarArticulo/:idArticulo", (request, response) -> {
-            articuloServices.eliminar(Long.parseLong(request.params("idArticulo")));
+            Articulo auxArt = articuloServices.find(Long.parseLong(request.params("idArticulo")));
+            for (Comentario comment : auxArt.getListaComentarios()){
+                ComentarioService.getInstance().eliminar(comment.getId());
+            }
+            articuloServices.eliminar(auxArt.getId());
+
             response.redirect("/home");
             return null;
         }, freeMarkerEngine);
@@ -548,6 +573,25 @@ public class Main {
 //                response.redirect("/login");
 //            }
 //        });
+    }
+
+    private static void encriptingCookies(Request request, Map<String, Object> attributes) {
+        attributes.put("editable", "no");
+        StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
+        textEncryptor.setPassword(encriptorClave);
+        Usuario usuario;
+        if(request.cookie("username") != null){
+            usuario = new Usuario(
+                    textEncryptor.decrypt(request.cookie("username")),
+                    textEncryptor.decrypt(request.cookie("nombre")),
+                    textEncryptor.decrypt(request.cookie("password")),
+                    Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isadmin"))),
+                    Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
+            );
+            attributes.put("usuario", usuario);
+        }else{
+            attributes.put("usuario", "");
+        }
     }
 
     private static void pruebaUsuario(Usuario adminUser, Usuario chema, Usuario chemaMod) {
@@ -594,6 +638,13 @@ public class Main {
         UsuarioService.getInstance().crear(adminUser);
     }
 
+    static private Set<Integer> getCantPaginas(int tam) {
+        Set<Integer> cantArticulos = new HashSet<>();
+        for (int i = 1; i <= Math.ceil(tam/2) + 1; i++) {
+            cantArticulos.add(i);
+        }
+        return cantArticulos;
+    }
 
 }
 

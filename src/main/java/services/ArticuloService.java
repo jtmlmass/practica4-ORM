@@ -1,6 +1,7 @@
 package services;
 
 import entidades.Articulo;
+import entidades.Etiqueta;
 import entidades.Usuario;
 
 import javax.persistence.EntityManager;
@@ -37,7 +38,9 @@ public class ArticuloService extends BaseService<Articulo> {
         for (Articulo art : articulos) {
             Articulo articuloAux = art;
             /* Añadir parseo de JSoup*/
-            articuloAux.setCuerpo(art.getCuerpo().substring(0, 70));
+            if (articuloAux.getCuerpo().length() >= 70 ) {
+                articuloAux.setCuerpo(art.getCuerpo().substring(0, 70));
+            }
             listaArticulosAux.add(articuloAux);
         }
         return listaArticulosAux;
@@ -55,15 +58,40 @@ public class ArticuloService extends BaseService<Articulo> {
         return listaArticulosAux;
     }
 
-    public List<Articulo> selectByUsuario(Usuario usuario){
+    public Set<Articulo> selectByUsuario(Usuario usuario){
         EntityManager entityManager = getEntityManager();
         String sql = "SELECT a FROM Articulo a, Usuario u WHERE a.autor.id = u.id";
         Query query = entityManager.createQuery(sql);
         System.out.println(query.getResultList());
         List<Articulo> listaArticulos = new ArrayList<>(query.getResultList());
+        Set<Articulo> listaDef = setUpCuerpoHome(listaArticulos);
         for (Articulo aux: listaArticulos){
             System.out.println((aux.getTitulo()));
         }
-        return listaArticulos;
+        return listaDef;
+    }
+
+    public Set<Articulo> findAllbyPagination(int pagina, int paginaNumero) {
+        EntityManager em = getEntityManager();
+        String hql = "FROM Articulo a order by a.fecha DESC";
+        Query query = em.createQuery(hql);
+        query.setFirstResult((paginaNumero-1) * pagina);
+        query.setMaxResults(pagina);
+        Set<Articulo> listaArticulosAux = setUpCuerpoHome(query.getResultList());
+
+        return listaArticulosAux;
+    }
+
+    public List<Articulo> findByTag(Etiqueta etiqueta){
+        List<Articulo> auxList = ArticuloService.getInstance().findAll();
+        List<Articulo> articulosEtiqueta = new ArrayList<>();
+        for (Articulo articulo : auxList){
+            for (Etiqueta tagArticulo : articulo.getListaEtiquetas()){
+                if (tagArticulo.getId() == etiqueta.getId()){
+                    articulosEtiqueta.add(articulo);
+                }
+            }
+        }
+        return articulosEtiqueta;
     }
 }

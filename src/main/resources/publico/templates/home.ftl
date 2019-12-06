@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="assets/img/favicon.ico">
     <title>Mediumish - A Medium style template by WowThemes.net</title>
-    <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <!-- Fonts -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+    <link rel="icon" href="${root}/img/favicon.ico">
+    <!-- Bootstrap core CSS -->
+    <link href="${root}css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="assets/css/mediumish.css" rel="stylesheet">
+    <link href="${root}css/mediumish.css" rel="stylesheet">
 </head>
 <body>
 
@@ -56,7 +56,7 @@
             <!-- begin post -->
                 <div class="card">
                     <a href="/articulo/${art.id}">
-                        <img class="img-fluid" src="assets/img/demopic/5.jpg" alt="">
+                        <img class="img-fluid" src="${root}img/demopic/5.jpg" alt="">
                     </a>
                     <div class="card-block">
                         <#if editable == "si">
@@ -66,6 +66,15 @@
                             <h2 class="card-title"><a href="/articulo/${art.id}">${art.titulo}</a></h2>
                         </#if>
                         <h6 class="card-blockquote text-muted">${art.cuerpo} ...</h6>
+                        <br>
+                        <!---->
+                        <div class="after-post-tags">
+                            <ul class="tags">
+                                <#list art.listaEtiquetas as tag>
+                                    <li><a href="/home/findByTag/${tag.id}">${tag.nombre}</a></li>
+                                </#list>
+                            </ul>
+                        </div>
                         <div class="metafooter">
                             <div class="wrapfooter">
                             <span class="meta-footer-thumb">
@@ -86,6 +95,9 @@
             <!-- end post -->
         </#list>
         </div>
+        <#list paginas as pagina>
+            <a href="home/${pagina}"><button type="button" class="btn btn-outline-secondary">${pagina}</button></a>
+        </#list>
     </section>
     <!-- End List Posts
     ================================================== -->
@@ -111,9 +123,9 @@
 <!-- Bootstrap core JavaScript
     ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="assets/js/jquery.min.js"></script>
+<script src="${root}js/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+<script src="${root}js/bootstrap.min.js"></script>
+<script src="${root}js/ie10-viewport-bug-workaround.js"></script>
 </body>
 </html>

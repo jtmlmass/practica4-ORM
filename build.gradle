@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'chemasspark'
+group 'practica4-orm'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8

@@ -94,6 +94,9 @@
                 </div>
             <!-- end post -->
         </#list>
+        <#list paginas as pagina>
+            <a href="/${pagina}"><button type="button" class="btn btn-outline-secondary">${pagina}</button></a>
+        </#list>
         </div>
     </section>
     <!-- End List Posts

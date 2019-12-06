@@ -37,7 +37,9 @@ public class ArticuloService extends BaseService<Articulo> {
         for (Articulo art : articulos) {
             Articulo articuloAux = art;
             /* Añadir parseo de JSoup*/
-            articuloAux.setCuerpo(art.getCuerpo().substring(0, 70));
+            if (articuloAux.getCuerpo().length() >= 70 ) {
+                articuloAux.setCuerpo(art.getCuerpo().substring(0, 70));
+            }
             listaArticulosAux.add(articuloAux);
         }
         return listaArticulosAux;
@@ -65,5 +67,17 @@ public class ArticuloService extends BaseService<Articulo> {
             System.out.println((aux.getTitulo()));
         }
         return listaArticulos;
+    }
+
+    public Set<Articulo> findAllbyPagination(int pagina, int paginaNumero) {
+        EntityManager em = getEntityManager();
+        String hql = "FROM Articulo a order by a.fecha_publicacion DESC";
+        Query query = em.createQuery(hql);
+        query.setFirstResult((paginaNumero-1) * pagina);
+        query.setMaxResults(pagina);
+        List<Articulo> listaArticulo = query.getResultList();
+        Set<Articulo> listaArticulosAux = setUpCuerpoHome(query.getResultList());
+
+        return listaArticulosAux;
     }
 }

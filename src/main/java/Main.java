@@ -105,25 +105,10 @@ public class Main {
         Spark.get("/home", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Home");
-            List<Articulo> articulos = articuloServices.findAll();
+            Set<Articulo> articulos = articuloServices.selectDescDate();
+            attributes.put("paginas", getCantPaginas(articulos.size()/2));
             attributes.put("articulos", articulos);
-            attributes.put("editable", "no");
-            StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
-            textEncryptor.setPassword(encriptorClave);
-            Usuario usuario;
-            if(request.cookie("username") != null){
-                usuario = new Usuario(
-                        textEncryptor.decrypt(request.cookie("username")),
-                        textEncryptor.decrypt(request.cookie("nombre")),
-                        textEncryptor.decrypt(request.cookie("password")),
-                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isadmin"))),
-                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
-                );
-                attributes.put("usuario", usuario);
-            }else{
-                attributes.put("usuario", "");
-            }
-
+            encriptingCookies(request, attributes);
             return new ModelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
@@ -180,22 +165,7 @@ public class Main {
         Spark.get("/crearArticulo", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Login");
-            attributes.put("editable", "no");
-            StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
-            textEncryptor.setPassword(encriptorClave);
-            Usuario usuario;
-            if(request.cookie("username") != null){
-                usuario = new Usuario(
-                        textEncryptor.decrypt(request.cookie("username")),
-                        textEncryptor.decrypt(request.cookie("nombre")),
-                        textEncryptor.decrypt(request.cookie("password")),
-                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isadmin"))),
-                        Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
-                );
-                attributes.put("usuario", usuario);
-            }else{
-                attributes.put("usuario", "");
-            }
+            encriptingCookies(request, attributes);
             return new ModelAndView(attributes, "crearArticulo.ftl");
         }, freeMarkerEngine);
 
@@ -561,6 +531,25 @@ public class Main {
 //        });
     }
 
+    private static void encriptingCookies(Request request, Map<String, Object> attributes) {
+        attributes.put("editable", "no");
+        StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
+        textEncryptor.setPassword(encriptorClave);
+        Usuario usuario;
+        if(request.cookie("username") != null){
+            usuario = new Usuario(
+                    textEncryptor.decrypt(request.cookie("username")),
+                    textEncryptor.decrypt(request.cookie("nombre")),
+                    textEncryptor.decrypt(request.cookie("password")),
+                    Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isadmin"))),
+                    Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
+            );
+            attributes.put("usuario", usuario);
+        }else{
+            attributes.put("usuario", "");
+        }
+    }
+
     private static void pruebaUsuario(Usuario adminUser, Usuario chema, Usuario chemaMod) {
         UsuarioService.getInstance().crear(adminUser);
         UsuarioService.getInstance().crear(chema);
@@ -605,6 +594,13 @@ public class Main {
         UsuarioService.getInstance().crear(adminUser);
     }
 
+    static private Set<Integer> getCantPaginas(int tam) {
+        Set<Integer> cantArticulos = new HashSet<>();
+        for (int i = 1; i <= Math.ceil(tam) + 1; i++) {
+            cantArticulos.add(i);
+        }
+        return cantArticulos;
+    }
 
 }
 

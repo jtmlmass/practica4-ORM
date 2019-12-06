@@ -105,6 +105,7 @@ public class Main {
         Spark.get("/home", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Home");
+            attributes.put("root", "assets/");
             Set<Articulo> articulos = articuloServices.selectDescDate();
             attributes.put("paginas", getCantPaginas(articulos.size()/2));
             Set<Articulo> artPaginados = ArticuloService.getInstance()
@@ -113,6 +114,22 @@ public class Main {
             attributes.put("articulos", artPaginados);
             encriptingCookies(request, attributes);
             return new ModelAndView(attributes, "home.ftl");
+        }, freeMarkerEngine);
+
+        Spark.get("/home/:numPagina", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("titulo", "Home");
+            attributes.put("root", "../assets/");
+            /*TODO: Agregar verificación de que esté logged in.*/
+            int numPagina = Integer.valueOf(request.params("numPagina"));
+            Set<Articulo> articulos = ArticuloService.getInstance().selectDescDate();
+//            attributes.put("estaLogueado", logged);
+            attributes.put("articulos", articulos);
+            attributes.put("paginas", getCantPaginas(articulos.size()/2));
+            Set<Articulo> artPaginados = ArticuloService.getInstance().findAllbyPagination(5, numPagina);
+            attributes.put("articulos", artPaginados);
+            encriptingCookies(request, attributes);
+            return modelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
         Spark.get("/misPosts", (request, response) -> {
@@ -599,7 +616,7 @@ public class Main {
 
     static private Set<Integer> getCantPaginas(int tam) {
         Set<Integer> cantArticulos = new HashSet<>();
-        for (int i = 1; i <= Math.ceil(tam) + 1; i++) {
+        for (int i = 1; i <= Math.ceil(tam/2) + 1; i++) {
             cantArticulos.add(i);
         }
         return cantArticulos;

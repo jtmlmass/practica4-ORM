@@ -71,7 +71,7 @@ public class ArticuloService extends BaseService<Articulo> {
 
     public Set<Articulo> findAllbyPagination(int pagina, int paginaNumero) {
         EntityManager em = getEntityManager();
-        String hql = "FROM Articulo a order by a.fecha_publicacion DESC";
+        String hql = "FROM Articulo a order by a.fecha DESC";
         Query query = em.createQuery(hql);
         query.setFirstResult((paginaNumero-1) * pagina);
         query.setMaxResults(pagina);

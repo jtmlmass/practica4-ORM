@@ -107,7 +107,10 @@ public class Main {
             attributes.put("titulo", "Home");
             Set<Articulo> articulos = articuloServices.selectDescDate();
             attributes.put("paginas", getCantPaginas(articulos.size()/2));
-            attributes.put("articulos", articulos);
+            Set<Articulo> artPaginados = ArticuloService.getInstance()
+                    .findAllbyPagination(5, 1);
+//            attributes.put("articulos", articulos);
+            attributes.put("articulos", artPaginados);
             encriptingCookies(request, attributes);
             return new ModelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);

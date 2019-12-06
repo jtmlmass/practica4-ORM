@@ -58,16 +58,17 @@ public class ArticuloService extends BaseService<Articulo> {
         return listaArticulosAux;
     }
 
-    public List<Articulo> selectByUsuario(Usuario usuario){
+    public Set<Articulo> selectByUsuario(Usuario usuario){
         EntityManager entityManager = getEntityManager();
         String sql = "SELECT a FROM Articulo a, Usuario u WHERE a.autor.id = u.id";
         Query query = entityManager.createQuery(sql);
         System.out.println(query.getResultList());
         List<Articulo> listaArticulos = new ArrayList<>(query.getResultList());
+        Set<Articulo> listaDef = setUpCuerpoHome(listaArticulos);
         for (Articulo aux: listaArticulos){
             System.out.println((aux.getTitulo()));
         }
-        return listaArticulos;
+        return listaDef;
     }
 
     public Set<Articulo> findAllbyPagination(int pagina, int paginaNumero) {

@@ -9,7 +9,7 @@
     <!-- Fonts -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
-    <link rel="icon" href="${root}img/favicon.ico">
+    <link rel="icon" href="${root}/img/favicon.ico">
     <!-- Bootstrap core CSS -->
     <link href="${root}css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->

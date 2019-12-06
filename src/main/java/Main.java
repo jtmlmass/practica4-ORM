@@ -158,7 +158,8 @@ public class Main {
                         Boolean.parseBoolean(textEncryptor.decrypt(request.cookie("isauthor")))
                 );
                 attributes.put("usuario", usuario);
-                List<Articulo> articulosUsuario = articuloServices.selectByUsuario(usuario);
+                Set<Articulo> articulosUsuario = articuloServices.selectByUsuario(usuario);
+                attributes.put("paginas", getCantPaginas(articulosUsuario.size()/2));
                 attributes.put("articulos", articulosUsuario);
 
             }else{
@@ -170,6 +171,7 @@ public class Main {
             }
             attributes.put("titulo", "My Posts");
             attributes.put("editable", "si");
+            attributes.put("root", "../assets/");
             return new ModelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
 
@@ -551,7 +553,12 @@ public class Main {
             return null;
         }, freeMarkerEngine);
         Spark.get("/eliminarArticulo/:idArticulo", (request, response) -> {
-            articuloServices.eliminar(Long.parseLong(request.params("idArticulo")));
+            Articulo auxArt = articuloServices.find(Long.parseLong(request.params("idArticulo")));
+            for (Comentario comment : auxArt.getListaComentarios()){
+                ComentarioService.getInstance().eliminar(comment.getId());
+            }
+            articuloServices.eliminar(auxArt.getId());
+
             response.redirect("/home");
             return null;
         }, freeMarkerEngine);

@@ -129,17 +129,17 @@ public class Main {
             encriptingCookies(request, attributes);
             return modelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);
+
         /*TODO: Revisar la efectividad de este método...*/
         Spark.get("/home/findByTag/:tagId", (request, response) -> {
             int idTag = Integer.valueOf(request.params("tagId"));
             Etiqueta tag = EtiquetaService.getInstance().find(idTag);
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Home");
-            attributes.put("root", "../..assets/");
-            int numPagina = Integer.valueOf(request.params("tagId"));
-            Set<Articulo> articulos = ArticuloService.getInstance().selectDescDate();
-            List<Articulo> artByTag = ArticuloService.getInstance().findByTag(tag);
-            attributes.put("articulos", artByTag);
+            attributes.put("root", "../../assets/");
+            List<Articulo> artsByTag = ArticuloService.getInstance().findByTag(tag);
+            attributes.put("paginas", getCantPaginas(artsByTag.size()/2));
+            attributes.put("articulos", artsByTag);
             encriptingCookies(request, attributes);
             return modelAndView(attributes, "home.ftl");
         }, freeMarkerEngine);

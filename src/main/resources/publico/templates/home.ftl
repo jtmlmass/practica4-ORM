@@ -71,7 +71,7 @@
                         <div class="after-post-tags">
                             <ul class="tags">
                                 <#list art.listaEtiquetas as tag>
-                                    <li><a href="#">${tag.nombre}</a></li>
+                                    <li><a href="/home/findByTag/${tag.id}">${tag.nombre}</a></li>
                                 </#list>
                             </ul>
                         </div>

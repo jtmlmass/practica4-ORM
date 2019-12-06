@@ -76,21 +76,21 @@ public class ArticuloService extends BaseService<Articulo> {
         Query query = em.createQuery(hql);
         query.setFirstResult((paginaNumero-1) * pagina);
         query.setMaxResults(pagina);
-        List<Articulo> listaArticulo = query.getResultList();
         Set<Articulo> listaArticulosAux = setUpCuerpoHome(query.getResultList());
 
         return listaArticulosAux;
     }
 
     public List<Articulo> findByTag(Etiqueta etiqueta){
-        EntityManager entityManager = getEntityManager();
-        String sql = "SELECT a FROM Articulo a, Etiqueta tag WHERE a.listaEtiquetas = tag.listaArticulos";
-        Query query = entityManager.createQuery(sql);
-        System.out.println(query.getResultList());
-        List<Articulo> listaArticulos = new ArrayList<>(query.getResultList());
-        for (Articulo aux: listaArticulos){
-            System.out.println((aux.getTitulo()));
+        List<Articulo> auxList = ArticuloService.getInstance().findAll();
+        List<Articulo> articulosEtiqueta = new ArrayList<>();
+        for (Articulo articulo : auxList){
+            for (Etiqueta tagArticulo : articulo.getListaEtiquetas()){
+                if (tagArticulo.getId() == etiqueta.getId()){
+                    articulosEtiqueta.add(articulo);
+                }
+            }
         }
-        return listaArticulos;
+        return articulosEtiqueta;
     }
 }
